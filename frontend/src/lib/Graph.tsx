@@ -14,7 +14,6 @@ import type {
 import { DEFAULT_COLOR } from './colors';
 import {
   getPointOnCircle,
-  generateBezierPath,
   distributeOnArc,
   downloadSvg,
   getCircleEdgePoint,
