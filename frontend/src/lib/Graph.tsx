@@ -399,14 +399,16 @@ export const Graph: React.FC<GraphProps> = ({
             
             return (
               <g key={`connections-${gi}`}>
-                <path
-                  d={generateBezierPath(msToGwStart.x, msToGwStart.y, msToGwEnd.x, msToGwEnd.y, 0.1)}
-                  fill="none"
+                <Edge
+                  startX={msToGwStart.x}
+                  startY={msToGwStart.y}
+                  endX={msToGwEnd.x}
+                  endY={msToGwEnd.y}
                   stroke={colors.gateway.stroke}
-                  strokeWidth="2"
-                  markerStart="url(#originMicroservice)"
-                  className="connection-line"
-                  style={{ opacity: msToGwOpacity }}
+                  strokeWidth={2}
+                  curvature={0.1}
+                  markerStart="originMicroservice"
+                  opacity={msToGwOpacity}
                 />
                 
                 {gl.gateway.outbound?.map((endpointName, oi) => {
@@ -418,16 +420,19 @@ export const Graph: React.FC<GraphProps> = ({
                   const connOpacity = getConnectionOpacity('gateway', gl.gateway.name, 'outbound', endpointName);
                   
                   return (
-                    <path
+                    <Edge
                       key={`out-conn-${gi}-${oi}`}
-                      d={generateBezierPath(gwEdge.x, gwEdge.y, outEdge.x, outEdge.y, 0.2)}
-                      fill="none"
+                      startX={gwEdge.x}
+                      startY={gwEdge.y}
+                      endX={outEdge.x}
+                      endY={outEdge.y}
                       stroke={colors.outbound.fill}
-                      strokeWidth="1.5"
-                      markerStart="url(#originGateway)"
-                      markerEnd="url(#arrowOutbound)"
-                      className="connection-line connection-outbound"
-                      style={{ opacity: connOpacity }}
+                      strokeWidth={1.5}
+                      curvature={0.2}
+                      markerStart="originGateway"
+                      markerEnd="arrowOutbound"
+                      opacity={connOpacity}
+                      className="connection-outbound"
                     />
                   );
                 })}
@@ -441,16 +446,19 @@ export const Graph: React.FC<GraphProps> = ({
                   const connOpacity = getConnectionOpacity('inbound', endpointName, 'gateway', gl.gateway.name);
                   
                   return (
-                    <path
+                    <Edge
                       key={`in-conn-${gi}-${ii}`}
-                      d={generateBezierPath(inEdge.x, inEdge.y, gwEdge.x, gwEdge.y, 0.2)}
-                      fill="none"
+                      startX={inEdge.x}
+                      startY={inEdge.y}
+                      endX={gwEdge.x}
+                      endY={gwEdge.y}
                       stroke={colors.inbound.fill}
-                      strokeWidth="1.5"
-                      markerStart="url(#originInbound)"
-                      markerEnd="url(#arrowInbound)"
-                      className="connection-line connection-inbound"
-                      style={{ opacity: connOpacity }}
+                      strokeWidth={1.5}
+                      curvature={0.2}
+                      markerStart="originInbound"
+                      markerEnd="arrowInbound"
+                      opacity={connOpacity}
+                      className="connection-inbound"
                     />
                   );
                 })}
