@@ -450,7 +450,6 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
           {layout.gatewayLayouts.map((gl, gi) => {
             const selected = isSelected(gl.gateway.name, 'gateway');
             const hovered = isHovered(gl.gateway.name, 'gateway');
-            const gatewayColors = COLORS.gateway[gl.gateway.type] || COLORS.gateway.REST;
             return (
               <g
                 key={`gateway-${gi}`}
@@ -465,8 +464,8 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                   cx={gl.position.x}
                   cy={gl.position.y}
                   r={gatewayRadius}
-                  fill={gatewayColors.fill}
-                  stroke={gatewayColors.stroke}
+                  fill={colors.gateway.fill}
+                  stroke={colors.gateway.stroke}
                   strokeWidth={selected ? 3 : 2}
                   className="gateway-circle"
                 />
@@ -474,7 +473,7 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                   x={gl.position.x}
                   y={gl.position.y - 5}
                   textAnchor="middle"
-                  fill={gatewayColors.text}
+                  fill={colors.gateway.text}
                   fontSize="10"
                   fontWeight="600"
                   className="gateway-type"
@@ -485,7 +484,7 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                   x={gl.position.x}
                   y={gl.position.y + 10}
                   textAnchor="middle"
-                  fill={gatewayColors.text}
+                  fill={colors.gateway.text}
                   fontSize="9"
                   className="gateway-name"
                 >
@@ -509,8 +508,8 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
             cx={centerX}
             cy={centerY}
             r={microserviceRadius}
-            fill={COLORS.microservice.fill}
-            stroke={COLORS.microservice.stroke}
+            fill={colors.microservice.fill}
+            stroke={colors.microservice.stroke}
             strokeWidth={isSelected(microservice.name, 'microservice') ? 4 : 3}
             className="microservice-circle"
           />
@@ -518,7 +517,7 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
             x={centerX}
             y={centerY + 4}
             textAnchor="middle"
-            fill={COLORS.microservice.text}
+            fill={colors.microservice.text}
             fontSize="12"
             fontWeight="bold"
             className="microservice-name"
