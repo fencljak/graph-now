@@ -223,33 +223,25 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
           {/* Arrow markers - pointing TO the target */}
           <marker id="arrowOutbound" viewBox="0 0 10 10" refX="9" refY="5"
             markerWidth="6" markerHeight="6" orient="auto">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill={COLORS.connection.outbound} />
+            <path d="M 0 0 L 10 5 L 0 10 z" fill={colors.outbound.fill} />
           </marker>
           <marker id="arrowInbound" viewBox="0 0 10 10" refX="9" refY="5"
             markerWidth="6" markerHeight="6" orient="auto">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill={COLORS.connection.inbound} />
+            <path d="M 0 0 L 10 5 L 0 10 z" fill={colors.inbound.fill} />
           </marker>
           
           {/* Origin circle markers - light color of source bubble */}
-          <marker id="originGatewayREST" viewBox="0 0 10 10" refX="5" refY="5"
+          <marker id="originGateway" viewBox="0 0 10 10" refX="5" refY="5"
             markerWidth="6" markerHeight="6" orient="auto">
-            <circle cx="5" cy="5" r="4" fill={COLORS.gateway.REST.stroke} />
-          </marker>
-          <marker id="originGatewayKAFKA" viewBox="0 0 10 10" refX="5" refY="5"
-            markerWidth="6" markerHeight="6" orient="auto">
-            <circle cx="5" cy="5" r="4" fill={COLORS.gateway.KAFKA.stroke} />
-          </marker>
-          <marker id="originGatewaySOAP" viewBox="0 0 10 10" refX="5" refY="5"
-            markerWidth="6" markerHeight="6" orient="auto">
-            <circle cx="5" cy="5" r="4" fill={COLORS.gateway.SOAP.stroke} />
+            <circle cx="5" cy="5" r="4" fill={colors.gateway.stroke} />
           </marker>
           <marker id="originInbound" viewBox="0 0 10 10" refX="5" refY="5"
             markerWidth="6" markerHeight="6" orient="auto">
-            <circle cx="5" cy="5" r="4" fill={COLORS.inbound.stroke} />
+            <circle cx="5" cy="5" r="4" fill={colors.inbound.stroke} />
           </marker>
           <marker id="originMicroservice" viewBox="0 0 10 10" refX="5" refY="5"
             markerWidth="6" markerHeight="6" orient="auto">
-            <circle cx="5" cy="5" r="4" fill={COLORS.microservice.stroke} />
+            <circle cx="5" cy="5" r="4" fill={colors.microservice.stroke} />
           </marker>
         </defs>
 
