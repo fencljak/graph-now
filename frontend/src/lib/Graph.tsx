@@ -543,86 +543,55 @@ export const Graph: React.FC<GraphProps> = ({
         </g>
 
         <g className="gateways-layer">
-          {layout.gatewayLayouts.map((gl, gi) => {
-            const selected = isSelected(gl.gateway.name, 'gateway');
-            const hovered = isHovered(gl.gateway.name, 'gateway');
-            const opacity = getOpacity(gl.gateway.name, 'gateway');
-            return (
-              <g
-                key={`gateway-${gi}`}
-                className={`gateway-group ${selected ? 'selected' : ''} ${hovered ? 'hovered' : ''}`}
-                style={{ opacity }}
-                onClick={() => handleClick(gl.gateway.name, 'gateway')}
-                onMouseEnter={(e) => handleMouseEnter(e, gl.gateway.name, 'gateway', 
-                  `Gateway: ${gl.gateway.name}\nType: ${gl.gateway.type}\nOutbound: ${gl.gateway.outbound?.length || 0}\nInbound: ${gl.gateway.inbound?.length || 0}`)}
-                onMouseLeave={handleMouseLeave}
-                data-testid={`gateway-${gl.gateway.name.replace(/\s+/g, '-').toLowerCase()}`}
-              >
-                <circle
-                  cx={gl.position.x}
-                  cy={gl.position.y}
-                  r={gatewayRadius}
-                  fill={colors.gateway.fill}
-                  stroke={colors.gateway.stroke}
-                  strokeWidth={selected ? 3 : 2}
-                  className="gateway-circle"
-                />
-                <text
-                  x={gl.position.x}
-                  y={gl.position.y - 5}
-                  textAnchor="middle"
-                  fill={colors.gateway.text}
-                  fontSize="10"
-                  fontWeight="600"
-                  className="gateway-type"
-                >
-                  {gl.gateway.type}
-                </text>
-                <text
-                  x={gl.position.x}
-                  y={gl.position.y + 10}
-                  textAnchor="middle"
-                  fill={colors.gateway.text}
-                  fontSize="9"
-                  className="gateway-name"
-                >
-                  {gl.gateway.name.length > 10 ? gl.gateway.name.slice(0, 8) + '...' : gl.gateway.name}
-                </text>
-              </g>
-            );
-          })}
+          {layout.gatewayLayouts.map((gl, gi) => (
+            <Circle
+              key={`gateway-${gi}`}
+              cx={gl.position.x}
+              cy={gl.position.y}
+              radius={gatewayRadius}
+              fill={colors.gateway.fill}
+              stroke={colors.gateway.stroke}
+              textColor={colors.gateway.text}
+              textLines={[
+                { text: gl.gateway.type, fontSize: 10, fontWeight: 600, yOffset: -5 },
+                { text: gl.gateway.name, fontSize: 9, fontWeight: 'normal', yOffset: 10 }
+              ]}
+              maxTextLength={10}
+              opacity={getOpacity(gl.gateway.name, 'gateway')}
+              selected={isSelected(gl.gateway.name, 'gateway')}
+              hovered={isHovered(gl.gateway.name, 'gateway')}
+              onClick={() => handleClick(gl.gateway.name, 'gateway')}
+              onMouseEnter={(e) => handleMouseEnter(e, gl.gateway.name, 'gateway', 
+                `Gateway: ${gl.gateway.name}\nType: ${gl.gateway.type}\nOutbound: ${gl.gateway.outbound?.length || 0}\nInbound: ${gl.gateway.inbound?.length || 0}`)}
+              onMouseLeave={handleMouseLeave}
+              testId={`gateway-${gl.gateway.name.replace(/\s+/g, '-').toLowerCase()}`}
+              className="gateway-group"
+              circleClassName="gateway-circle"
+            />
+          ))}
         </g>
 
-        <g
-          className={`microservice-group ${isSelected(microservice.name, 'microservice') ? 'selected' : ''} ${isHovered(microservice.name, 'microservice') ? 'hovered' : ''}`}
-          style={{ opacity: getOpacity(microservice.name, 'microservice') }}
+        <Circle
+          cx={centerX}
+          cy={centerY}
+          radius={microserviceRadius}
+          fill={colors.microservice.fill}
+          stroke={colors.microservice.stroke}
+          strokeWidth={3}
+          textColor={colors.microservice.text}
+          text={microservice.name}
+          maxTextLength={12}
+          opacity={getOpacity(microservice.name, 'microservice')}
+          selected={isSelected(microservice.name, 'microservice')}
+          hovered={isHovered(microservice.name, 'microservice')}
           onClick={() => handleClick(microservice.name, 'microservice')}
           onMouseEnter={(e) => handleMouseEnter(e, microservice.name, 'microservice', 
             `Microservice: ${microservice.name}\nID: ${microservice.id}\nGateways: ${microservice.gateways?.length || 0}`)}
           onMouseLeave={handleMouseLeave}
-          data-testid="microservice-bubble"
-        >
-          <circle
-            cx={centerX}
-            cy={centerY}
-            r={microserviceRadius}
-            fill={colors.microservice.fill}
-            stroke={colors.microservice.stroke}
-            strokeWidth={isSelected(microservice.name, 'microservice') ? 4 : 3}
-            className="microservice-circle"
-          />
-          <text
-            x={centerX}
-            y={centerY + 4}
-            textAnchor="middle"
-            fill={colors.microservice.text}
-            fontSize="12"
-            fontWeight="bold"
-            className="microservice-name"
-          >
-            {microservice.name.length > 12 ? microservice.name.slice(0, 10) + '...' : microservice.name}
-          </text>
-        </g>
+          testId="microservice-bubble"
+          className="microservice-group"
+          circleClassName="microservice-circle"
+        />
 
         {tooltip.visible && (
           <g className="tooltip-group" style={{ pointerEvents: 'none' }}>
