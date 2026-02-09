@@ -1,5 +1,7 @@
 // Main library exports
 export { Graph } from './Graph';
+export { Rectangle } from './Rectangle';
+export { Circle } from './Circle';
 export { COLORS, DEFAULT_COLOR } from './colors';
 export { GatewayTypes } from './types';
 export {
@@ -31,3 +33,6 @@ export type {
   GatewayLayout,
   GraphLayout
 } from './types';
+
+export type { RectangleProps } from './Rectangle';
+export type { CircleProps, CircleTextLine } from './Circle';
