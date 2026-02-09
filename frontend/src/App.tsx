@@ -1,20 +1,30 @@
 import { useState } from 'react';
-import { Graph } from './lib';
+import { Graph, Slider } from './lib';
 import type { Microservice, GraphConfiguration } from './lib';
 import mockData from './data/mockData.json';
 import './App.css';
 
+// Default ring gap configuration
+const DEFAULT_RING_GAP = 90;
+const MIN_RING_GAP = DEFAULT_RING_GAP;
+const MAX_RING_GAP = DEFAULT_RING_GAP * 4;
+
 function App() {
   const [microservice] = useState<Microservice>(mockData.microservice as Microservice);
+  const [ringGap, setRingGap] = useState(DEFAULT_RING_GAP);
 
-  // Example configuration with custom colors
-  // If colors not specified, they fallback to grey (#9E9E9E)
+  // Configuration with custom colors and ring gap
   const configuration: GraphConfiguration = {
     colors: {
       microservice: '#7C4DFF', // Purple
       gateway: '#00BCD4',      // Cyan
       inbound: '#5C6BC0',      // Indigo
       outbound: '#26A69A'      // Teal
+    },
+    ringGap: {
+      value: ringGap,
+      min: MIN_RING_GAP,
+      max: MAX_RING_GAP
     }
   };
 
@@ -26,6 +36,19 @@ function App() {
       </header>
       
       <main className="app-main">
+        <div className="graph-controls">
+          <Slider
+            value={ringGap}
+            min={MIN_RING_GAP}
+            max={MAX_RING_GAP}
+            step={5}
+            label="Ring Gap"
+            formatValue={(v) => `${v}px`}
+            onChange={setRingGap}
+            testId="ring-gap-slider"
+          />
+        </div>
+        
         <Graph 
           microservice={microservice} 
           width={900} 
