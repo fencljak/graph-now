@@ -1,6 +1,6 @@
 import React, { useRef, useState, useMemo, useCallback } from 'react';
 import { COLORS } from './colors';
-import { getPointOnCircle, generateBezierPath, distributeOnArc, estimateTextWidth, downloadSvg } from './utils';
+import { getPointOnCircle, generateBezierPath, distributeOnArc, downloadSvg } from './utils';
 import './Graph.css';
 
 /**
@@ -24,8 +24,8 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
   const endpointWidth = 120;
   const endpointHeight = 32;
   const gatewayRingRadius = 140;
-  const outboundRingRadius = 280;
-  const inboundRingRadius = 280;
+  const inboundRingRadius = 230;  // Smaller ring for inbound
+  const outboundRingRadius = 320; // Larger ring for outbound
 
   // Calculate positions for all elements
   const layout = useMemo(() => {
@@ -46,19 +46,19 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
       const arcStart = angle - arcSpan / 2 + 10;
       const arcEnd = angle + arcSpan / 2 - 10;
       
-      // Outbound endpoints (outer ring, one side)
-      const outboundCount = gateway.outbound?.length || 0;
-      const outboundAngles = distributeOnArc(outboundCount, arcStart, angle - 5);
-      const outboundPositions = outboundAngles.map(a => ({
-        ...getPointOnCircle(centerX, centerY, outboundRingRadius, a),
+      // Inbound endpoints (inner ring - closer to gateway)
+      const inboundCount = gateway.inbound?.length || 0;
+      const inboundAngles = distributeOnArc(inboundCount, arcStart, arcStart + (arcSpan - 20) * 0.45);
+      const inboundPositions = inboundAngles.map(a => ({
+        ...getPointOnCircle(centerX, centerY, inboundRingRadius, a),
         angle: a
       }));
       
-      // Inbound endpoints (outer ring, other side)
-      const inboundCount = gateway.inbound?.length || 0;
-      const inboundAngles = distributeOnArc(inboundCount, angle + 5, arcEnd);
-      const inboundPositions = inboundAngles.map(a => ({
-        ...getPointOnCircle(centerX, centerY, inboundRingRadius, a),
+      // Outbound endpoints (outer ring - further from gateway)
+      const outboundCount = gateway.outbound?.length || 0;
+      const outboundAngles = distributeOnArc(outboundCount, arcStart + (arcSpan - 20) * 0.55, arcEnd);
+      const outboundPositions = outboundAngles.map(a => ({
+        ...getPointOnCircle(centerX, centerY, outboundRingRadius, a),
         angle: a
       }));
       
@@ -133,36 +133,13 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
         data-testid="microservice-graph-svg"
       >
         <defs>
-          {/* Gradient definitions */}
-          <radialGradient id="microserviceGradient" cx="30%" cy="30%">
-            <stop offset="0%" stopColor={COLORS.microservice.fillLight} />
-            <stop offset="100%" stopColor={COLORS.microservice.fill} />
-          </radialGradient>
-          
-          {Object.entries(COLORS.gateway).map(([type, colors]) => (
-            <radialGradient key={type} id={`gateway${type}Gradient`} cx="30%" cy="30%">
-              <stop offset="0%" stopColor={colors.fillLight} />
-              <stop offset="100%" stopColor={colors.fill} />
-            </radialGradient>
-          ))}
-          
-          <linearGradient id="outboundGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={COLORS.outbound.fillLight} />
-            <stop offset="100%" stopColor={COLORS.outbound.fill} />
-          </linearGradient>
-          
-          <linearGradient id="inboundGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={COLORS.inbound.fillLight} />
-            <stop offset="100%" stopColor={COLORS.inbound.fill} />
-          </linearGradient>
-
-          {/* Arrow markers */}
+          {/* Arrow markers - pointing TO the target */}
           <marker id="arrowOutbound" viewBox="0 0 10 10" refX="9" refY="5"
-            markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            markerWidth="6" markerHeight="6" orient="auto">
             <path d="M 0 0 L 10 5 L 0 10 z" fill={COLORS.connection.outbound} />
           </marker>
           <marker id="arrowInbound" viewBox="0 0 10 10" refX="9" refY="5"
-            markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            markerWidth="6" markerHeight="6" orient="auto">
             <path d="M 0 0 L 10 5 L 0 10 z" fill={COLORS.connection.inbound} />
           </marker>
         </defs>
@@ -172,6 +149,16 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
           cx={centerX}
           cy={centerY}
           r={gatewayRingRadius}
+          fill="none"
+          stroke="#e0e0e0"
+          strokeWidth="1"
+          strokeDasharray="4 4"
+          className="reference-ring"
+        />
+        <circle
+          cx={centerX}
+          cy={centerY}
+          r={inboundRingRadius}
           fill="none"
           stroke="#e0e0e0"
           strokeWidth="1"
@@ -206,7 +193,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
                 className="connection-line"
               />
               
-              {/* Gateway to Outbound connections */}
+              {/* Gateway to Outbound connections - arrow points TO outbound */}
               {gl.gateway.outbound?.map((_, oi) => (
                 <path
                   key={`out-conn-${gi}-${oi}`}
@@ -224,7 +211,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
                 />
               ))}
               
-              {/* Gateway to Inbound connections */}
+              {/* Inbound to Gateway connections - arrow points TO gateway */}
               {gl.gateway.inbound?.map((_, ii) => (
                 <path
                   key={`in-conn-${gi}-${ii}`}
@@ -245,11 +232,11 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
           ))}
         </g>
 
-        {/* Endpoints layer (rendered first so they're below gateways when not selected) */}
+        {/* Endpoints layer */}
         <g className="endpoints-layer">
           {layout.gatewayLayouts.map((gl, gi) => (
             <g key={`endpoints-${gi}`}>
-              {/* Outbound endpoints */}
+              {/* Outbound endpoints - outer ring */}
               {gl.gateway.outbound?.map((endpoint, oi) => {
                 const pos = gl.outboundPositions[oi];
                 if (!pos) return null;
@@ -272,7 +259,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
                       height={endpointHeight}
                       rx="8"
                       ry="8"
-                      fill="url(#outboundGradient)"
+                      fill={COLORS.outbound.fill}
                       stroke={COLORS.outbound.stroke}
                       strokeWidth={selected ? 3 : 2}
                       className="endpoint-rect"
@@ -281,7 +268,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
                       x={pos.x}
                       y={pos.y + 4}
                       textAnchor="middle"
-                      fill="white"
+                      fill={COLORS.outbound.text}
                       fontSize="11"
                       fontWeight="500"
                       className="endpoint-text"
@@ -292,7 +279,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
                 );
               })}
               
-              {/* Inbound endpoints */}
+              {/* Inbound endpoints - inner ring */}
               {gl.gateway.inbound?.map((endpoint, ii) => {
                 const pos = gl.inboundPositions[ii];
                 if (!pos) return null;
@@ -315,7 +302,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
                       height={endpointHeight}
                       rx="8"
                       ry="8"
-                      fill="url(#inboundGradient)"
+                      fill={COLORS.inbound.fill}
                       stroke={COLORS.inbound.stroke}
                       strokeWidth={selected ? 3 : 2}
                       className="endpoint-rect"
@@ -324,7 +311,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
                       x={pos.x}
                       y={pos.y + 4}
                       textAnchor="middle"
-                      fill="white"
+                      fill={COLORS.inbound.text}
                       fontSize="11"
                       fontWeight="500"
                       className="endpoint-text"
@@ -358,7 +345,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
                   cx={gl.position.x}
                   cy={gl.position.y}
                   r={gatewayRadius}
-                  fill={`url(#gateway${gl.gateway.type}Gradient)`}
+                  fill={gatewayColors.fill}
                   stroke={gatewayColors.stroke}
                   strokeWidth={selected ? 3 : 2}
                   className="gateway-circle"
@@ -367,7 +354,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
                   x={gl.position.x}
                   y={gl.position.y - 5}
                   textAnchor="middle"
-                  fill="white"
+                  fill={gatewayColors.text}
                   fontSize="10"
                   fontWeight="600"
                   className="gateway-type"
@@ -378,7 +365,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
                   x={gl.position.x}
                   y={gl.position.y + 10}
                   textAnchor="middle"
-                  fill="white"
+                  fill={gatewayColors.text}
                   fontSize="9"
                   className="gateway-name"
                 >
@@ -402,7 +389,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
             cx={centerX}
             cy={centerY}
             r={microserviceRadius}
-            fill="url(#microserviceGradient)"
+            fill={COLORS.microservice.fill}
             stroke={COLORS.microservice.stroke}
             strokeWidth={isSelected(microservice.name, 'microservice') ? 4 : 3}
             className="microservice-circle"
@@ -411,7 +398,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
             x={centerX}
             y={centerY + 4}
             textAnchor="middle"
-            fill="white"
+            fill={COLORS.microservice.text}
             fontSize="12"
             fontWeight="bold"
             className="microservice-name"
