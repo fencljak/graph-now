@@ -1,0 +1,47 @@
+{
+  "microservice": {
+    "name": "OrderService",
+    "id": "order-svc-001",
+    "gateways": [
+      {
+        "type": "REST",
+        "name": "API Gateway",
+        "outbound": [
+          "PaymentService",
+          "InventoryAPI",
+          "ShippingService"
+        ],
+        "inbound": [
+          "POST /orders",
+          "GET /orders/{id}",
+          "PUT /orders/{id}"
+        ]
+      },
+      {
+        "type": "KAFKA",
+        "name": "Event Bus",
+        "outbound": [
+          "order.created",
+          "order.updated",
+          "order.shipped"
+        ],
+        "inbound": [
+          "payment.completed",
+          "inventory.reserved"
+        ]
+      },
+      {
+        "type": "SOAP",
+        "name": "Legacy Bridge",
+        "outbound": [
+          "ERP System",
+          "AccountingWS"
+        ],
+        "inbound": [
+          "OrderImport",
+          "CustomerSync"
+        ]
+      }
+    ]
+  }
+}

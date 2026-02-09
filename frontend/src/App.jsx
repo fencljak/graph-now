@@ -1,35 +1,31 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import { Graph } from './lib';
+import mockData from './data/mockData.json';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [microservice] = useState(mockData.microservice);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="app" data-testid="app-container">
+      <header className="app-header">
+        <h1>Microservice Architecture Visualizer</h1>
+        <p>Visualize how your microservice integrates with the outside world</p>
+      </header>
+      
+      <main className="app-main">
+        <Graph 
+          microservice={microservice} 
+          width={900} 
+          height={900} 
+        />
+      </main>
+
+      <footer className="app-footer">
+        <p>Click on elements to select • Hover for details • Export as SVG</p>
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;

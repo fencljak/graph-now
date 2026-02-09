@@ -1,0 +1,189 @@
+.graph-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.graph-container.graph-empty {
+  min-height: 400px;
+  justify-content: center;
+  color: #666;
+}
+
+.graph-toolbar {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+}
+
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+.export-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+}
+
+.export-btn:active {
+  transform: translateY(0);
+}
+
+.graph-svg {
+  background: white;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+/* Reference rings */
+.reference-ring {
+  opacity: 0.5;
+}
+
+/* Connection lines */
+.connection-line {
+  opacity: 0.7;
+  transition: opacity 0.2s ease, stroke-width 0.2s ease;
+}
+
+.connection-line:hover {
+  opacity: 1;
+  stroke-width: 3;
+}
+
+/* Microservice bubble */
+.microservice-group {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.microservice-group:hover .microservice-circle,
+.microservice-group.hovered .microservice-circle {
+  filter: brightness(1.1);
+}
+
+.microservice-group.selected .microservice-circle {
+  filter: drop-shadow(0 0 8px rgba(124, 77, 255, 0.6));
+}
+
+.microservice-circle {
+  transition: filter 0.2s ease, stroke-width 0.2s ease;
+}
+
+.microservice-name {
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Gateway bubbles */
+.gateway-group {
+  cursor: pointer;
+}
+
+.gateway-group:hover .gateway-circle,
+.gateway-group.hovered .gateway-circle {
+  filter: brightness(1.15);
+}
+
+.gateway-group.selected .gateway-circle {
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.4));
+}
+
+.gateway-circle {
+  transition: filter 0.2s ease, stroke-width 0.2s ease;
+}
+
+.gateway-type,
+.gateway-name {
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Endpoint rectangles */
+.endpoint-group {
+  cursor: pointer;
+}
+
+.endpoint-group:hover .endpoint-rect,
+.endpoint-group.hovered .endpoint-rect {
+  filter: brightness(1.15);
+}
+
+.endpoint-group.selected .endpoint-rect {
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.4));
+}
+
+.endpoint-group.selected {
+  z-index: 1000 !important;
+}
+
+.endpoint-rect {
+  transition: filter 0.2s ease, stroke-width 0.2s ease;
+}
+
+.endpoint-text {
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Tooltip */
+.tooltip-group {
+  pointer-events: none;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Legend */
+.graph-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 20px;
+  padding: 16px 24px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #444;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Hover states for better UX */
+.microservice-group:hover,
+.gateway-group:hover,
+.endpoint-group:hover {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
