@@ -459,11 +459,12 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                 if (!pos) return null;
                 const selected = isSelected(endpoint, 'outbound');
                 const hovered = isHovered(endpoint, 'outbound');
+                const opacity = getOpacity(endpoint, 'outbound');
                 return (
                   <g
                     key={`outbound-${gi}-${oi}`}
                     className={`endpoint-group outbound ${selected ? 'selected' : ''} ${hovered ? 'hovered' : ''}`}
-                    style={{ zIndex: selected ? 1000 : 1 }}
+                    style={{ zIndex: selected ? 1000 : 1, opacity }}
                     onClick={() => handleClick(endpoint, 'outbound')}
                     onMouseEnter={(e) => handleMouseEnter(e, endpoint, 'outbound', `Outbound: ${endpoint}\nGateway: ${gl.gateway.name} (${gl.gateway.type})`)}
                     onMouseLeave={handleMouseLeave}
@@ -502,11 +503,12 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                 if (!pos) return null;
                 const selected = isSelected(endpoint, 'inbound');
                 const hovered = isHovered(endpoint, 'inbound');
+                const opacity = getOpacity(endpoint, 'inbound');
                 return (
                   <g
                     key={`inbound-${gi}-${ii}`}
                     className={`endpoint-group inbound ${selected ? 'selected' : ''} ${hovered ? 'hovered' : ''}`}
-                    style={{ zIndex: selected ? 1000 : 1 }}
+                    style={{ zIndex: selected ? 1000 : 1, opacity }}
                     onClick={() => handleClick(endpoint, 'inbound')}
                     onMouseEnter={(e) => handleMouseEnter(e, endpoint, 'inbound', `Inbound: ${endpoint}\nGateway: ${gl.gateway.name} (${gl.gateway.type})`)}
                     onMouseLeave={handleMouseLeave}
