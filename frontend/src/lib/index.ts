@@ -4,6 +4,7 @@ export { Rectangle } from './Rectangle';
 export { Circle } from './Circle';
 export { Edge } from './Edge';
 export { Ring } from './Ring';
+export { Slider } from './Slider';
 export { COLORS, DEFAULT_COLOR } from './colors';
 export { GatewayTypes } from './types';
 export {
@@ -25,6 +26,7 @@ export type {
   GraphProps,
   GraphConfiguration,
   ColorsConfig,
+  RingGapConfig,
   ColorSet,
   Position,
   RectPosition,
@@ -40,3 +42,4 @@ export type { RectangleProps } from './Rectangle';
 export type { CircleProps, CircleTextLine } from './Circle';
 export type { EdgeProps } from './Edge';
 export type { RingProps } from './Ring';
+export type { SliderProps } from './Slider';
