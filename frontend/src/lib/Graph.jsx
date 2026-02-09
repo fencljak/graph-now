@@ -1,6 +1,6 @@
 import React, { useRef, useState, useMemo, useCallback } from 'react';
 import { COLORS } from './colors';
-import { getPointOnCircle, generateBezierPath, distributeOnArc, downloadSvg } from './utils';
+import { getPointOnCircle, generateBezierPath, distributeOnArc, downloadSvg, getCircleEdgePoint, getRectEdgePoint } from './utils';
 import './Graph.css';
 
 /**
