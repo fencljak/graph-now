@@ -387,36 +387,9 @@ export const Graph: React.FC<GraphProps> = ({
           </marker>
         </defs>
 
-        <circle
-          cx={centerX}
-          cy={centerY}
-          r={gatewayRingRadius}
-          fill="none"
-          stroke="#e0e0e0"
-          strokeWidth="1"
-          strokeDasharray="4 4"
-          className="reference-ring"
-        />
-        <circle
-          cx={centerX}
-          cy={centerY}
-          r={inboundRingRadius}
-          fill="none"
-          stroke="#e0e0e0"
-          strokeWidth="1"
-          strokeDasharray="4 4"
-          className="reference-ring"
-        />
-        <circle
-          cx={centerX}
-          cy={centerY}
-          r={outboundRingRadius}
-          fill="none"
-          stroke="#e0e0e0"
-          strokeWidth="1"
-          strokeDasharray="4 4"
-          className="reference-ring"
-        />
+        <Ring cx={centerX} cy={centerY} radius={gatewayRingRadius} />
+        <Ring cx={centerX} cy={centerY} radius={inboundRingRadius} />
+        <Ring cx={centerX} cy={centerY} radius={outboundRingRadius} />
 
         <g className="connections-layer">
           {layout.gatewayLayouts.map((gl, gi) => {
