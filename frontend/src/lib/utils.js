@@ -67,6 +67,44 @@ export const getRectEdgePoint = (rectCenterX, rectCenterY, rectWidth, rectHeight
 };
 
 /**
+ * Lighten a hex color by a percentage
+ * @param {string} hex - Hex color (e.g., '#7C4DFF')
+ * @param {number} percent - Percentage to lighten (0-100)
+ * @returns {string} Lightened hex color
+ */
+export const lightenColor = (hex, percent = 30) => {
+  // Remove # if present
+  const cleanHex = hex.replace('#', '');
+  
+  // Parse RGB
+  const r = parseInt(cleanHex.substring(0, 2), 16);
+  const g = parseInt(cleanHex.substring(2, 4), 16);
+  const b = parseInt(cleanHex.substring(4, 6), 16);
+  
+  // Lighten
+  const lighten = (channel) => Math.min(255, Math.floor(channel + (255 - channel) * (percent / 100)));
+  
+  const newR = lighten(r).toString(16).padStart(2, '0');
+  const newG = lighten(g).toString(16).padStart(2, '0');
+  const newB = lighten(b).toString(16).padStart(2, '0');
+  
+  return `#${newR}${newG}${newB}`;
+};
+
+/**
+ * Generate color set (fill, stroke, text) from a base color
+ * @param {string} baseColor - Base hex color
+ * @returns {{fill: string, stroke: string, text: string}}
+ */
+export const generateColorSet = (baseColor) => {
+  return {
+    fill: baseColor,
+    stroke: lightenColor(baseColor, 35),
+    text: '#FFFFFF'
+  };
+};
+
+/**
  * Generate bezier curve path between two points with control points
  */
 export const generateBezierPath = (startX, startY, endX, endY, curvature = 0.3) => {
