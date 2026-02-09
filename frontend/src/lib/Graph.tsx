@@ -282,6 +282,52 @@ export const Graph: React.FC<GraphProps> = ({
       };
     });
     
+    // Global collision resolution - check collisions between rectangles from different gateways
+    const resolveGlobalCollisions = (
+      layouts: GatewayLayout[],
+      positionKey: 'inboundPositions' | 'outboundPositions',
+      ringRadius: number,
+      direction: number
+    ): void => {
+      // Collect all positions with gateway index
+      const allPositions: { gwIndex: number; posIndex: number; pos: RectPosition }[] = [];
+      layouts.forEach((gl, gwIndex) => {
+        gl[positionKey].forEach((pos, posIndex) => {
+          allPositions.push({ gwIndex, posIndex, pos });
+        });
+      });
+      
+      let hasCollision = true;
+      let iterations = 0;
+      const maxIterations = 100;
+      
+      while (hasCollision && iterations < maxIterations) {
+        hasCollision = false;
+        iterations++;
+        
+        for (let i = 0; i < allPositions.length; i++) {
+          for (let j = i + 1; j < allPositions.length; j++) {
+            if (rectsCollide(allPositions[i].pos, allPositions[j].pos)) {
+              hasCollision = true;
+              // Move the second rectangle
+              const item = allPositions[j];
+              const newAngle = item.pos.angle + direction * 3;
+              const newCenter = getPointOnCircle(centerX, centerY, ringRadius, newAngle);
+              const newPos = createRectPosition(newCenter, newAngle);
+              
+              // Update in both the allPositions array and the original layout
+              allPositions[j].pos = newPos;
+              layouts[item.gwIndex][positionKey][item.posIndex] = newPos;
+            }
+          }
+        }
+      }
+    };
+    
+    // Resolve global collisions for inbound and outbound separately
+    resolveGlobalCollisions(gatewayLayouts, 'inboundPositions', inboundRingRadius, -1);
+    resolveGlobalCollisions(gatewayLayouts, 'outboundPositions', outboundRingRadius, 1);
+    
     return { gatewayLayouts };
   }, [microservice, centerX, centerY, endpointWidth, endpointHeight, gatewayRingRadius, inboundRingRadius, outboundRingRadius]);
 
