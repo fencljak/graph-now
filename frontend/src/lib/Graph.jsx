@@ -218,6 +218,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
         <g className="connections-layer">
           {layout.gatewayLayouts.map((gl, gi) => {
             const gatewayColors = COLORS.gateway[gl.gateway.type] || COLORS.gateway.REST;
+            const gatewayType = gl.gateway.type;
             
             // Calculate edge points for microservice -> gateway connection
             const msToGwStart = getCircleEdgePoint(centerX, centerY, microserviceRadius, gl.position.x, gl.position.y);
@@ -235,6 +236,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
                   fill="none"
                   stroke={gatewayColors.stroke}
                   strokeWidth="2"
+                  markerStart="url(#originMicroservice)"
                   className="connection-line"
                 />
                 
@@ -255,6 +257,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
                       fill="none"
                       stroke={COLORS.connection.outbound}
                       strokeWidth="1.5"
+                      markerStart={`url(#originGateway${gatewayType})`}
                       markerEnd="url(#arrowOutbound)"
                       className="connection-line connection-outbound"
                     />
@@ -278,6 +281,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
                       fill="none"
                       stroke={COLORS.connection.inbound}
                       strokeWidth="1.5"
+                      markerStart="url(#originInbound)"
                       markerEnd="url(#arrowInbound)"
                       className="connection-line connection-inbound"
                     />
