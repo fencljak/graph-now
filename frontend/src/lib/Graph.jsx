@@ -178,58 +178,76 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
 
         {/* Connection lines layer */}
         <g className="connections-layer">
-          {layout.gatewayLayouts.map((gl, gi) => (
-            <g key={`connections-${gi}`}>
-              {/* Microservice to Gateway connection */}
-              <path
-                d={generateBezierPath(
-                  centerX, centerY,
-                  gl.position.x, gl.position.y,
-                  0.1
-                )}
-                fill="none"
-                stroke={COLORS.gateway[gl.gateway.type]?.stroke || '#999'}
-                strokeWidth="2"
-                className="connection-line"
-              />
-              
-              {/* Gateway to Outbound connections - arrow points TO outbound */}
-              {gl.gateway.outbound?.map((_, oi) => (
+          {layout.gatewayLayouts.map((gl, gi) => {
+            const gatewayColors = COLORS.gateway[gl.gateway.type] || COLORS.gateway.REST;
+            
+            // Calculate edge points for microservice -> gateway connection
+            const msToGwStart = getCircleEdgePoint(centerX, centerY, microserviceRadius, gl.position.x, gl.position.y);
+            const msToGwEnd = getCircleEdgePoint(gl.position.x, gl.position.y, gatewayRadius, centerX, centerY);
+            
+            return (
+              <g key={`connections-${gi}`}>
+                {/* Microservice to Gateway connection */}
                 <path
-                  key={`out-conn-${gi}-${oi}`}
                   d={generateBezierPath(
-                    gl.position.x, gl.position.y,
-                    gl.outboundPositions[oi]?.x || 0,
-                    gl.outboundPositions[oi]?.y || 0,
-                    0.2
+                    msToGwStart.x, msToGwStart.y,
+                    msToGwEnd.x, msToGwEnd.y,
+                    0.1
                   )}
                   fill="none"
-                  stroke={COLORS.connection.outbound}
-                  strokeWidth="1.5"
-                  markerEnd="url(#arrowOutbound)"
-                  className="connection-line connection-outbound"
+                  stroke={gatewayColors.stroke}
+                  strokeWidth="2"
+                  className="connection-line"
                 />
-              ))}
-              
-              {/* Inbound to Gateway connections - arrow points TO gateway */}
-              {gl.gateway.inbound?.map((_, ii) => (
-                <path
-                  key={`in-conn-${gi}-${ii}`}
-                  d={generateBezierPath(
-                    gl.inboundPositions[ii]?.x || 0,
-                    gl.inboundPositions[ii]?.y || 0,
-                    gl.position.x, gl.position.y,
-                    0.2
-                  )}
-                  fill="none"
-                  stroke={COLORS.connection.inbound}
-                  strokeWidth="1.5"
-                  markerEnd="url(#arrowInbound)"
-                  className="connection-line connection-inbound"
-                />
-              ))}
-            </g>
-          ))}
+                
+                {/* Gateway to Outbound connections - arrow points TO outbound */}
+                {gl.gateway.outbound?.map((_, oi) => {
+                  const outPos = gl.outboundPositions[oi];
+                  if (!outPos) return null;
+                  
+                  // Edge point on gateway facing outbound
+                  const gwEdge = getCircleEdgePoint(gl.position.x, gl.position.y, gatewayRadius, outPos.x, outPos.y);
+                  // Edge point on outbound rect facing gateway
+                  const outEdge = getRectEdgePoint(outPos.x, outPos.y, endpointWidth, endpointHeight, gl.position.x, gl.position.y);
+                  
+                  return (
+                    <path
+                      key={`out-conn-${gi}-${oi}`}
+                      d={generateBezierPath(gwEdge.x, gwEdge.y, outEdge.x, outEdge.y, 0.2)}
+                      fill="none"
+                      stroke={COLORS.connection.outbound}
+                      strokeWidth="1.5"
+                      markerEnd="url(#arrowOutbound)"
+                      className="connection-line connection-outbound"
+                    />
+                  );
+                })}
+                
+                {/* Inbound to Gateway connections - arrow points TO gateway */}
+                {gl.gateway.inbound?.map((_, ii) => {
+                  const inPos = gl.inboundPositions[ii];
+                  if (!inPos) return null;
+                  
+                  // Edge point on inbound rect facing gateway
+                  const inEdge = getRectEdgePoint(inPos.x, inPos.y, endpointWidth, endpointHeight, gl.position.x, gl.position.y);
+                  // Edge point on gateway facing inbound
+                  const gwEdge = getCircleEdgePoint(gl.position.x, gl.position.y, gatewayRadius, inPos.x, inPos.y);
+                  
+                  return (
+                    <path
+                      key={`in-conn-${gi}-${ii}`}
+                      d={generateBezierPath(inEdge.x, inEdge.y, gwEdge.x, gwEdge.y, 0.2)}
+                      fill="none"
+                      stroke={COLORS.connection.inbound}
+                      strokeWidth="1.5"
+                      markerEnd="url(#arrowInbound)"
+                      className="connection-line connection-inbound"
+                    />
+                  );
+                })}
+              </g>
+            );
+          })}
         </g>
 
         {/* Endpoints layer */}
