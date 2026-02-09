@@ -265,6 +265,10 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
     setSelectedElement(prev => 
       prev?.name === element && prev?.type === type ? null : { type, name: element }
     );
+    // Toggle focus for opacity dimming
+    setFocusedElement(prev => 
+      prev?.name === element && prev?.type === type ? null : { type, name: element }
+    );
   }, []);
 
   const handleExport = useCallback(() => {
