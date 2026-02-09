@@ -44,14 +44,12 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
       const inboundCount = gateway.inbound?.length || 0;
       const outboundCount = gateway.outbound?.length || 0;
       
-      // Calculate minimum angular spacing to prevent overlap
-      // Arc length = radius * angle_radians, need arc_length >= rectangle_width
-      // angle_degrees = (width / radius) * (180 / PI)
-      const inboundMinSpacing = (endpointWidth / inboundRingRadius) * (180 / Math.PI) + 2;
-      const outboundMinSpacing = (endpointWidth / outboundRingRadius) * (180 / Math.PI) + 2;
+      // Initial tight spacing
+      const inboundSpacing = 15;
+      const outboundSpacing = 15;
       
-      const inboundTotalSpan = Math.max(0, (inboundCount - 1) * inboundMinSpacing);
-      const outboundTotalSpan = Math.max(0, (outboundCount - 1) * outboundMinSpacing);
+      const inboundTotalSpan = Math.max(0, (inboundCount - 1) * inboundSpacing);
+      const outboundTotalSpan = Math.max(0, (outboundCount - 1) * outboundSpacing);
       
       // Position inbound group slightly to the left of gateway angle
       const inboundCenterAngle = angle - 20;
@@ -61,23 +59,74 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
       const outboundCenterAngle = angle + 20;
       const outboundStartAngle = outboundCenterAngle - outboundTotalSpan / 2;
       
-      // Inbound endpoints (inner ring)
-      const inboundAngles = Array.from({ length: inboundCount }, (_, idx) => 
-        inboundStartAngle + idx * inboundMinSpacing
-      );
-      const inboundPositions = inboundAngles.map(a => ({
-        ...getPointOnCircle(centerX, centerY, inboundRingRadius, a),
-        angle: a
-      }));
+      // Helper to create rectangle with bounds
+      const createRectPosition = (centerPos, a) => ({
+        x: centerPos.x,
+        y: centerPos.y,
+        angle: a,
+        // Corner coordinates
+        topLeft: {
+          x: centerPos.x - endpointWidth / 2,
+          y: centerPos.y - endpointHeight / 2
+        },
+        bottomRight: {
+          x: centerPos.x + endpointWidth / 2,
+          y: centerPos.y + endpointHeight / 2
+        }
+      });
       
-      // Outbound endpoints (outer ring)
-      const outboundAngles = Array.from({ length: outboundCount }, (_, idx) => 
-        outboundStartAngle + idx * outboundMinSpacing
-      );
-      const outboundPositions = outboundAngles.map(a => ({
-        ...getPointOnCircle(centerX, centerY, outboundRingRadius, a),
-        angle: a
-      }));
+      // Initial placement for inbound
+      let inboundPositions = Array.from({ length: inboundCount }, (_, idx) => {
+        const a = inboundStartAngle + idx * inboundSpacing;
+        const centerPos = getPointOnCircle(centerX, centerY, inboundRingRadius, a);
+        return createRectPosition(centerPos, a);
+      });
+      
+      // Initial placement for outbound
+      let outboundPositions = Array.from({ length: outboundCount }, (_, idx) => {
+        const a = outboundStartAngle + idx * outboundSpacing;
+        const centerPos = getPointOnCircle(centerX, centerY, outboundRingRadius, a);
+        return createRectPosition(centerPos, a);
+      });
+      
+      // Collision detection helper
+      const rectsCollide = (rect1, rect2) => {
+        return !(rect1.bottomRight.x < rect2.topLeft.x ||
+                 rect2.bottomRight.x < rect1.topLeft.x ||
+                 rect1.bottomRight.y < rect2.topLeft.y ||
+                 rect2.bottomRight.y < rect1.topLeft.y);
+      };
+      
+      // Post-process: resolve collisions by moving rectangles along the ring
+      const resolveCollisions = (positions, ringRadius, direction = 1) => {
+        if (positions.length < 2) return positions;
+        
+        const resolved = [...positions];
+        let hasCollision = true;
+        let iterations = 0;
+        const maxIterations = 50;
+        
+        while (hasCollision && iterations < maxIterations) {
+          hasCollision = false;
+          iterations++;
+          
+          for (let j = 1; j < resolved.length; j++) {
+            if (rectsCollide(resolved[j - 1], resolved[j])) {
+              hasCollision = true;
+              // Move the second rectangle further along the ring
+              const newAngle = resolved[j].angle + direction * 3;
+              const newCenter = getPointOnCircle(centerX, centerY, ringRadius, newAngle);
+              resolved[j] = createRectPosition(newCenter, newAngle);
+            }
+          }
+        }
+        
+        return resolved;
+      };
+      
+      // Resolve collisions for each group
+      inboundPositions = resolveCollisions(inboundPositions, inboundRingRadius, -1);
+      outboundPositions = resolveCollisions(outboundPositions, outboundRingRadius, 1);
       
       return {
         gateway,
