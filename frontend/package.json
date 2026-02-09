@@ -16,6 +16,7 @@
     "src/lib"
   ],
   "scripts": {
+    "start": "vite",
     "dev": "vite",
     "build": "vite build",
     "build:lib": "vite build --mode lib",
