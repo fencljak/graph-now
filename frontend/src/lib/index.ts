@@ -2,6 +2,8 @@
 export { Graph } from './Graph';
 export { Rectangle } from './Rectangle';
 export { Circle } from './Circle';
+export { Edge } from './Edge';
+export { Ring } from './Ring';
 export { COLORS, DEFAULT_COLOR } from './colors';
 export { GatewayTypes } from './types';
 export {
@@ -36,3 +38,5 @@ export type {
 
 export type { RectangleProps } from './Rectangle';
 export type { CircleProps, CircleTextLine } from './Circle';
+export type { EdgeProps } from './Edge';
+export type { RingProps } from './Ring';
