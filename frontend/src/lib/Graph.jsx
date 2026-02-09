@@ -549,10 +549,12 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
           {layout.gatewayLayouts.map((gl, gi) => {
             const selected = isSelected(gl.gateway.name, 'gateway');
             const hovered = isHovered(gl.gateway.name, 'gateway');
+            const opacity = getOpacity(gl.gateway.name, 'gateway');
             return (
               <g
                 key={`gateway-${gi}`}
                 className={`gateway-group ${selected ? 'selected' : ''} ${hovered ? 'hovered' : ''}`}
+                style={{ opacity }}
                 onClick={() => handleClick(gl.gateway.name, 'gateway')}
                 onMouseEnter={(e) => handleMouseEnter(e, gl.gateway.name, 'gateway', 
                   `Gateway: ${gl.gateway.name}\nType: ${gl.gateway.type}\nOutbound: ${gl.gateway.outbound?.length || 0}\nInbound: ${gl.gateway.inbound?.length || 0}`)}
@@ -597,6 +599,7 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
         {/* Microservice center bubble */}
         <g
           className={`microservice-group ${isSelected(microservice.name, 'microservice') ? 'selected' : ''} ${isHovered(microservice.name, 'microservice') ? 'hovered' : ''}`}
+          style={{ opacity: getOpacity(microservice.name, 'microservice') }}
           onClick={() => handleClick(microservice.name, 'microservice')}
           onMouseEnter={(e) => handleMouseEnter(e, microservice.name, 'microservice', 
             `Microservice: ${microservice.name}\nID: ${microservice.id}\nGateways: ${microservice.gateways?.length || 0}`)}
