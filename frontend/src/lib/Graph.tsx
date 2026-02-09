@@ -490,86 +490,52 @@ export const Graph: React.FC<GraphProps> = ({
               {gl.gateway.outbound?.map((endpoint, oi) => {
                 const pos = gl.outboundPositions[oi];
                 if (!pos) return null;
-                const selected = isSelected(endpoint, 'outbound');
-                const hovered = isHovered(endpoint, 'outbound');
-                const opacity = getOpacity(endpoint, 'outbound');
                 return (
-                  <g
+                  <Rectangle
                     key={`outbound-${gi}-${oi}`}
-                    className={`endpoint-group outbound ${selected ? 'selected' : ''} ${hovered ? 'hovered' : ''}`}
-                    style={{ opacity }}
+                    x={pos.x}
+                    y={pos.y}
+                    width={endpointWidth}
+                    height={endpointHeight}
+                    fill={colors.outbound.fill}
+                    stroke={colors.outbound.stroke}
+                    textColor={colors.outbound.text}
+                    text={endpoint}
+                    opacity={getOpacity(endpoint, 'outbound')}
+                    selected={isSelected(endpoint, 'outbound')}
+                    hovered={isHovered(endpoint, 'outbound')}
                     onClick={() => handleClick(endpoint, 'outbound')}
                     onMouseEnter={(e) => handleMouseEnter(e, endpoint, 'outbound', `Outbound: ${endpoint}\nGateway: ${gl.gateway.name} (${gl.gateway.type})`)}
                     onMouseLeave={handleMouseLeave}
-                    data-testid={`outbound-${endpoint.replace(/\s+/g, '-').toLowerCase()}`}
-                  >
-                    <rect
-                      x={pos.x - endpointWidth / 2}
-                      y={pos.y - endpointHeight / 2}
-                      width={endpointWidth}
-                      height={endpointHeight}
-                      rx="8"
-                      ry="8"
-                      fill={colors.outbound.fill}
-                      stroke={colors.outbound.stroke}
-                      strokeWidth={selected ? 3 : 2}
-                      className="endpoint-rect"
-                    />
-                    <text
-                      x={pos.x}
-                      y={pos.y + 4}
-                      textAnchor="middle"
-                      fill={colors.outbound.text}
-                      fontSize="11"
-                      fontWeight="500"
-                      className="endpoint-text"
-                    >
-                      {endpoint.length > 14 ? endpoint.slice(0, 12) + '...' : endpoint}
-                    </text>
-                  </g>
+                    testId={`outbound-${endpoint.replace(/\s+/g, '-').toLowerCase()}`}
+                    className="outbound"
+                  />
                 );
               })}
               
               {gl.gateway.inbound?.map((endpoint, ii) => {
                 const pos = gl.inboundPositions[ii];
                 if (!pos) return null;
-                const selected = isSelected(endpoint, 'inbound');
-                const hovered = isHovered(endpoint, 'inbound');
-                const opacity = getOpacity(endpoint, 'inbound');
                 return (
-                  <g
+                  <Rectangle
                     key={`inbound-${gi}-${ii}`}
-                    className={`endpoint-group inbound ${selected ? 'selected' : ''} ${hovered ? 'hovered' : ''}`}
-                    style={{ opacity }}
+                    x={pos.x}
+                    y={pos.y}
+                    width={endpointWidth}
+                    height={endpointHeight}
+                    fill={colors.inbound.fill}
+                    stroke={colors.inbound.stroke}
+                    textColor={colors.inbound.text}
+                    text={endpoint}
+                    opacity={getOpacity(endpoint, 'inbound')}
+                    selected={isSelected(endpoint, 'inbound')}
+                    hovered={isHovered(endpoint, 'inbound')}
                     onClick={() => handleClick(endpoint, 'inbound')}
                     onMouseEnter={(e) => handleMouseEnter(e, endpoint, 'inbound', `Inbound: ${endpoint}\nGateway: ${gl.gateway.name} (${gl.gateway.type})`)}
                     onMouseLeave={handleMouseLeave}
-                    data-testid={`inbound-${endpoint.replace(/\s+/g, '-').toLowerCase()}`}
-                  >
-                    <rect
-                      x={pos.x - endpointWidth / 2}
-                      y={pos.y - endpointHeight / 2}
-                      width={endpointWidth}
-                      height={endpointHeight}
-                      rx="8"
-                      ry="8"
-                      fill={colors.inbound.fill}
-                      stroke={colors.inbound.stroke}
-                      strokeWidth={selected ? 3 : 2}
-                      className="endpoint-rect"
-                    />
-                    <text
-                      x={pos.x}
-                      y={pos.y + 4}
-                      textAnchor="middle"
-                      fill={colors.inbound.text}
-                      fontSize="11"
-                      fontWeight="500"
-                      className="endpoint-text"
-                    >
-                      {endpoint.length > 14 ? endpoint.slice(0, 12) + '...' : endpoint}
-                    </text>
-                  </g>
+                    testId={`inbound-${endpoint.replace(/\s+/g, '-').toLowerCase()}`}
+                    className="inbound"
+                  />
                 );
               })}
             </g>
