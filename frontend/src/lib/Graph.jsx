@@ -41,16 +41,17 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
       const angle = gatewayAngles[i] || 0;
       const pos = getPointOnCircle(centerX, centerY, gatewayRingRadius, angle);
       
-      // Calculate tighter arc segments for this gateway's endpoints
       const inboundCount = gateway.inbound?.length || 0;
       const outboundCount = gateway.outbound?.length || 0;
       
-      // Tighter spacing: ~15 degrees per endpoint, centered around gateway angle
-      const inboundSpacing = 15; // degrees between inbound endpoints
-      const outboundSpacing = 15; // degrees between outbound endpoints
+      // Calculate minimum angular spacing to prevent overlap
+      // Arc length = radius * angle_radians, need arc_length >= rectangle_width
+      // angle_degrees = (width / radius) * (180 / PI)
+      const inboundMinSpacing = (endpointWidth / inboundRingRadius) * (180 / Math.PI) + 2;
+      const outboundMinSpacing = (endpointWidth / outboundRingRadius) * (180 / Math.PI) + 2;
       
-      const inboundTotalSpan = Math.max(0, (inboundCount - 1) * inboundSpacing);
-      const outboundTotalSpan = Math.max(0, (outboundCount - 1) * outboundSpacing);
+      const inboundTotalSpan = Math.max(0, (inboundCount - 1) * inboundMinSpacing);
+      const outboundTotalSpan = Math.max(0, (outboundCount - 1) * outboundMinSpacing);
       
       // Position inbound group slightly to the left of gateway angle
       const inboundCenterAngle = angle - 20;
@@ -62,7 +63,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
       
       // Inbound endpoints (inner ring)
       const inboundAngles = Array.from({ length: inboundCount }, (_, idx) => 
-        inboundStartAngle + idx * inboundSpacing
+        inboundStartAngle + idx * inboundMinSpacing
       );
       const inboundPositions = inboundAngles.map(a => ({
         ...getPointOnCircle(centerX, centerY, inboundRingRadius, a),
@@ -71,7 +72,7 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
       
       // Outbound endpoints (outer ring)
       const outboundAngles = Array.from({ length: outboundCount }, (_, idx) => 
-        outboundStartAngle + idx * outboundSpacing
+        outboundStartAngle + idx * outboundMinSpacing
       );
       const outboundPositions = outboundAngles.map(a => ({
         ...getPointOnCircle(centerX, centerY, outboundRingRadius, a),
