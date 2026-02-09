@@ -280,9 +280,6 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
         {/* Connection lines layer */}
         <g className="connections-layer">
           {layout.gatewayLayouts.map((gl, gi) => {
-            const gatewayColors = COLORS.gateway[gl.gateway.type] || COLORS.gateway.REST;
-            const gatewayType = gl.gateway.type;
-            
             // Calculate edge points for microservice -> gateway connection
             const msToGwStart = getCircleEdgePoint(centerX, centerY, microserviceRadius, gl.position.x, gl.position.y);
             const msToGwEnd = getCircleEdgePoint(gl.position.x, gl.position.y, gatewayRadius, centerX, centerY);
@@ -297,7 +294,7 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                     0.1
                   )}
                   fill="none"
-                  stroke={gatewayColors.stroke}
+                  stroke={colors.gateway.stroke}
                   strokeWidth="2"
                   markerStart="url(#originMicroservice)"
                   className="connection-line"
@@ -318,9 +315,9 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                       key={`out-conn-${gi}-${oi}`}
                       d={generateBezierPath(gwEdge.x, gwEdge.y, outEdge.x, outEdge.y, 0.2)}
                       fill="none"
-                      stroke={COLORS.connection.outbound}
+                      stroke={colors.outbound.fill}
                       strokeWidth="1.5"
-                      markerStart={`url(#originGateway${gatewayType})`}
+                      markerStart="url(#originGateway)"
                       markerEnd="url(#arrowOutbound)"
                       className="connection-line connection-outbound"
                     />
@@ -342,7 +339,7 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                       key={`in-conn-${gi}-${ii}`}
                       d={generateBezierPath(inEdge.x, inEdge.y, gwEdge.x, gwEdge.y, 0.2)}
                       fill="none"
-                      stroke={COLORS.connection.inbound}
+                      stroke={colors.inbound.fill}
                       strokeWidth="1.5"
                       markerStart="url(#originInbound)"
                       markerEnd="url(#arrowInbound)"
