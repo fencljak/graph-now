@@ -53,11 +53,25 @@ export interface ColorsConfig {
 }
 
 /**
+ * Ring gap configuration for controlling spacing between rings
+ */
+export interface RingGapConfig {
+  /** Current ring gap value */
+  value: number;
+  /** Minimum ring gap */
+  min: number;
+  /** Maximum ring gap */
+  max: number;
+}
+
+/**
  * Graph component configuration
  */
 export interface GraphConfiguration {
   /** Custom colors for graph elements */
   colors?: ColorsConfig;
+  /** Ring gap configuration for spacing between rings */
+  ringGap?: RingGapConfig;
 }
 
 /**
