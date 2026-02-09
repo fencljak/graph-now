@@ -372,6 +372,8 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
             const msToGwStart = getCircleEdgePoint(centerX, centerY, microserviceRadius, gl.position.x, gl.position.y);
             const msToGwEnd = getCircleEdgePoint(gl.position.x, gl.position.y, gatewayRadius, centerX, centerY);
             
+            const msToGwOpacity = getConnectionOpacity('microservice', microservice.name, 'gateway', gl.gateway.name);
+            
             return (
               <g key={`connections-${gi}`}>
                 {/* Microservice to Gateway connection */}
@@ -386,10 +388,11 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                   strokeWidth="2"
                   markerStart="url(#originMicroservice)"
                   className="connection-line"
+                  style={{ opacity: msToGwOpacity }}
                 />
                 
                 {/* Gateway to Outbound connections - arrow points TO outbound */}
-                {gl.gateway.outbound?.map((_, oi) => {
+                {gl.gateway.outbound?.map((endpointName, oi) => {
                   const outPos = gl.outboundPositions[oi];
                   if (!outPos) return null;
                   
@@ -397,6 +400,8 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                   const gwEdge = getCircleEdgePoint(gl.position.x, gl.position.y, gatewayRadius, outPos.x, outPos.y);
                   // Edge point on outbound rect facing gateway
                   const outEdge = getRectEdgePoint(outPos.x, outPos.y, endpointWidth, endpointHeight, gl.position.x, gl.position.y);
+                  
+                  const connOpacity = getConnectionOpacity('gateway', gl.gateway.name, 'outbound', endpointName);
                   
                   return (
                     <path
@@ -408,12 +413,13 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                       markerStart="url(#originGateway)"
                       markerEnd="url(#arrowOutbound)"
                       className="connection-line connection-outbound"
+                      style={{ opacity: connOpacity }}
                     />
                   );
                 })}
                 
                 {/* Inbound to Gateway connections - arrow points TO gateway */}
-                {gl.gateway.inbound?.map((_, ii) => {
+                {gl.gateway.inbound?.map((endpointName, ii) => {
                   const inPos = gl.inboundPositions[ii];
                   if (!inPos) return null;
                   
@@ -421,6 +427,8 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                   const inEdge = getRectEdgePoint(inPos.x, inPos.y, endpointWidth, endpointHeight, gl.position.x, gl.position.y);
                   // Edge point on gateway facing inbound
                   const gwEdge = getCircleEdgePoint(gl.position.x, gl.position.y, gatewayRadius, inPos.x, inPos.y);
+                  
+                  const connOpacity = getConnectionOpacity('inbound', endpointName, 'gateway', gl.gateway.name);
                   
                   return (
                     <path
@@ -432,6 +440,7 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                       markerStart="url(#originInbound)"
                       markerEnd="url(#arrowInbound)"
                       className="connection-line connection-inbound"
+                      style={{ opacity: connOpacity }}
                     />
                   );
                 })}
