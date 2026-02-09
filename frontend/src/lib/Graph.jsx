@@ -46,18 +46,18 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
       const outboundCount = gateway.outbound?.length || 0;
       
       // Tighter spacing: ~15 degrees per endpoint, centered around gateway angle
-      const inboundSpacing = 12; // degrees between inbound endpoints
-      const outboundSpacing = 12; // degrees between outbound endpoints
+      const inboundSpacing = 15; // degrees between inbound endpoints
+      const outboundSpacing = 15; // degrees between outbound endpoints
       
       const inboundTotalSpan = Math.max(0, (inboundCount - 1) * inboundSpacing);
       const outboundTotalSpan = Math.max(0, (outboundCount - 1) * outboundSpacing);
       
       // Position inbound group slightly to the left of gateway angle
-      const inboundCenterAngle = angle - 15;
+      const inboundCenterAngle = angle - 20;
       const inboundStartAngle = inboundCenterAngle - inboundTotalSpan / 2;
       
       // Position outbound group slightly to the right of gateway angle
-      const outboundCenterAngle = angle + 15;
+      const outboundCenterAngle = angle + 20;
       const outboundStartAngle = outboundCenterAngle - outboundTotalSpan / 2;
       
       // Inbound endpoints (inner ring)
