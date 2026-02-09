@@ -315,7 +315,17 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
         viewBox={`0 0 ${width} ${height}`}
         className="graph-svg"
         data-testid="microservice-graph-svg"
+        onClick={handleBackgroundClick}
       >
+        {/* Invisible background rect for click detection */}
+        <rect
+          x="0"
+          y="0"
+          width={width}
+          height={height}
+          fill="transparent"
+          data-background="true"
+        />
         <defs>
           {/* Arrow markers - pointing TO the target */}
           <marker id="arrowOutbound" viewBox="0 0 10 10" refX="9" refY="5"
