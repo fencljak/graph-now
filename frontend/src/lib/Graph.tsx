@@ -165,9 +165,13 @@ export const Graph: React.FC<GraphProps> = ({
   const gatewayRadius = 35;
   const endpointWidth = 120;
   const endpointHeight = 32;
+  
+  // Default ring gap (90px) and calculate ring radiuses based on configuration
+  const defaultRingGap = 90;
+  const ringGap = configuration.ringGap?.value ?? defaultRingGap;
   const gatewayRingRadius = 140;
-  const inboundRingRadius = 230;
-  const outboundRingRadius = 320;
+  const inboundRingRadius = gatewayRingRadius + ringGap;
+  const outboundRingRadius = gatewayRingRadius + ringGap * 2;
 
   // Calculate positions for all elements
   const layout = useMemo<GraphLayout | null>(() => {
