@@ -10,6 +10,63 @@ export const getPointOnCircle = (centerX, centerY, radius, angleInDegrees) => {
 };
 
 /**
+ * Calculate angle between two points in degrees
+ */
+export const getAngleBetweenPoints = (x1, y1, x2, y2) => {
+  return Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
+};
+
+/**
+ * Get edge point on a circle facing toward a target point
+ * @returns {{x: number, y: number}} The plug point on the circle edge
+ */
+export const getCircleEdgePoint = (circleCenterX, circleCenterY, circleRadius, targetX, targetY) => {
+  const angle = Math.atan2(targetY - circleCenterY, targetX - circleCenterX);
+  return {
+    x: circleCenterX + circleRadius * Math.cos(angle),
+    y: circleCenterY + circleRadius * Math.sin(angle)
+  };
+};
+
+/**
+ * Get edge point on a rounded rectangle facing toward a target point
+ * @returns {{x: number, y: number}} The plug point on the rectangle edge
+ */
+export const getRectEdgePoint = (rectCenterX, rectCenterY, rectWidth, rectHeight, targetX, targetY, cornerRadius = 8) => {
+  const dx = targetX - rectCenterX;
+  const dy = targetY - rectCenterY;
+  
+  if (dx === 0 && dy === 0) {
+    return { x: rectCenterX, y: rectCenterY - rectHeight / 2 };
+  }
+  
+  const halfWidth = rectWidth / 2;
+  const halfHeight = rectHeight / 2;
+  
+  // Calculate intersection with rectangle edges
+  const angle = Math.atan2(dy, dx);
+  const tanAngle = Math.tan(angle);
+  
+  let edgeX, edgeY;
+  
+  // Check which edge we intersect
+  if (Math.abs(dx) * halfHeight > Math.abs(dy) * halfWidth) {
+    // Intersects left or right edge
+    edgeX = dx > 0 ? halfWidth : -halfWidth;
+    edgeY = edgeX * tanAngle;
+  } else {
+    // Intersects top or bottom edge
+    edgeY = dy > 0 ? halfHeight : -halfHeight;
+    edgeX = edgeY / tanAngle;
+  }
+  
+  return {
+    x: rectCenterX + edgeX,
+    y: rectCenterY + edgeY
+  };
+};
+
+/**
  * Generate bezier curve path between two points with control points
  */
 export const generateBezierPath = (startX, startY, endX, endY, curvature = 0.3) => {
@@ -20,6 +77,8 @@ export const generateBezierPath = (startX, startY, endX, endY, curvature = 0.3) 
   const dx = endX - startX;
   const dy = endY - startY;
   const len = Math.sqrt(dx * dx + dy * dy);
+  
+  if (len === 0) return `M ${startX} ${startY} L ${endX} ${endY}`;
   
   // Perpendicular direction
   const perpX = -dy / len;
