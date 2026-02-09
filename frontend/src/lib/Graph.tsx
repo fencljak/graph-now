@@ -24,6 +24,8 @@ import {
 } from './utils';
 import { Rectangle } from './Rectangle';
 import { Circle } from './Circle';
+import { Edge } from './Edge';
+import { Ring } from './Ring';
 import './Graph.css';
 
 interface ColorPalette {
