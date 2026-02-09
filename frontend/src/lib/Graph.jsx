@@ -557,27 +557,19 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
       {/* Legend */}
       <div className="graph-legend" data-testid="graph-legend">
         <div className="legend-item">
-          <span className="legend-color" style={{ background: COLORS.microservice.fill, borderRadius: '50%' }}></span>
+          <span className="legend-color" style={{ background: colors.microservice.fill, borderRadius: '50%' }}></span>
           <span>Microservice</span>
         </div>
         <div className="legend-item">
-          <span className="legend-color" style={{ background: COLORS.gateway.REST.fill, borderRadius: '50%' }}></span>
-          <span>REST Gateway</span>
+          <span className="legend-color" style={{ background: colors.gateway.fill, borderRadius: '50%' }}></span>
+          <span>Gateway</span>
         </div>
         <div className="legend-item">
-          <span className="legend-color" style={{ background: COLORS.gateway.KAFKA.fill, borderRadius: '50%' }}></span>
-          <span>Kafka Gateway</span>
-        </div>
-        <div className="legend-item">
-          <span className="legend-color" style={{ background: COLORS.gateway.SOAP.fill, borderRadius: '50%' }}></span>
-          <span>SOAP Gateway</span>
-        </div>
-        <div className="legend-item">
-          <span className="legend-color" style={{ background: COLORS.outbound.fill, borderRadius: '4px' }}></span>
+          <span className="legend-color" style={{ background: colors.outbound.fill, borderRadius: '4px' }}></span>
           <span>Outbound (calls)</span>
         </div>
         <div className="legend-item">
-          <span className="legend-color" style={{ background: COLORS.inbound.fill, borderRadius: '4px' }}></span>
+          <span className="legend-color" style={{ background: colors.inbound.fill, borderRadius: '4px' }}></span>
           <span>Inbound (exposes)</span>
         </div>
       </div>
