@@ -23,6 +23,7 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
   const svgRef = useRef(null);
   const [hoveredElement, setHoveredElement] = useState(null);
   const [selectedElement, setSelectedElement] = useState(null);
+  const [focusedElement, setFocusedElement] = useState(null); // For opacity dimming
   const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, content: '' });
 
   // Build color palette from configuration or defaults
@@ -36,6 +37,89 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
       outbound: generateColorSet(userColors.outbound || DEFAULT_COLOR),
     };
   }, [configuration.colors]);
+
+  // Calculate which elements are within 1 edge of the focused element
+  const getConnectedElements = useCallback((focused, msData) => {
+    if (!focused || !msData) return null;
+    
+    const connected = {
+      microservice: false,
+      gateways: new Set(),
+      inbound: new Set(),
+      outbound: new Set()
+    };
+    
+    if (focused.type === 'microservice') {
+      // Microservice -> all gateways are 1 edge away
+      connected.microservice = true;
+      msData.gateways?.forEach(gw => connected.gateways.add(gw.name));
+    } 
+    else if (focused.type === 'gateway') {
+      // Gateway -> microservice + its inbound/outbound are 1 edge away
+      connected.microservice = true;
+      connected.gateways.add(focused.name);
+      const gw = msData.gateways?.find(g => g.name === focused.name);
+      if (gw) {
+        gw.inbound?.forEach(ep => connected.inbound.add(ep));
+        gw.outbound?.forEach(ep => connected.outbound.add(ep));
+      }
+    }
+    else if (focused.type === 'inbound') {
+      // Inbound -> its gateway is 1 edge away
+      connected.inbound.add(focused.name);
+      msData.gateways?.forEach(gw => {
+        if (gw.inbound?.includes(focused.name)) {
+          connected.gateways.add(gw.name);
+        }
+      });
+    }
+    else if (focused.type === 'outbound') {
+      // Outbound -> its gateway is 1 edge away
+      connected.outbound.add(focused.name);
+      msData.gateways?.forEach(gw => {
+        if (gw.outbound?.includes(focused.name)) {
+          connected.gateways.add(gw.name);
+        }
+      });
+    }
+    
+    return connected;
+  }, []);
+
+  // Memoize connected elements
+  const connectedElements = useMemo(() => {
+    return getConnectedElements(focusedElement, microservice);
+  }, [focusedElement, microservice, getConnectedElements]);
+
+  // Get opacity for an element based on focus state
+  const getOpacity = useCallback((name, type) => {
+    if (!focusedElement || !connectedElements) return 1;
+    
+    if (type === 'microservice') {
+      return connectedElements.microservice ? 1 : 0.2;
+    }
+    if (type === 'gateway') {
+      return connectedElements.gateways.has(name) ? 1 : 0.2;
+    }
+    if (type === 'inbound') {
+      return connectedElements.inbound.has(name) ? 1 : 0.2;
+    }
+    if (type === 'outbound') {
+      return connectedElements.outbound.has(name) ? 1 : 0.2;
+    }
+    return 1;
+  }, [focusedElement, connectedElements]);
+
+  // Get opacity for connection lines
+  const getConnectionOpacity = useCallback((fromType, fromName, toType, toName) => {
+    if (!focusedElement || !connectedElements) return 1;
+    
+    // Connection is visible if both endpoints are connected
+    const fromVisible = getOpacity(fromName, fromType) === 1;
+    const toVisible = getOpacity(toName, toType) === 1;
+    
+    return (fromVisible && toVisible) ? 1 : 0.2;
+  }, [focusedElement, connectedElements, getOpacity]);
 
   // Layout configuration
   const centerX = width / 2;
