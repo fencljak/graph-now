@@ -6,6 +6,16 @@ import './App.css';
 function App() {
   const [microservice] = useState(mockData.microservice);
 
+  // Example configuration with custom colors
+  const configuration = {
+    colors: {
+      microservice: '#7C4DFF', // Purple
+      gateway: '#00BCD4',      // Cyan
+      inbound: '#5C6BC0',      // Indigo
+      outbound: '#26A69A'      // Teal
+    }
+  };
+
   return (
     <div className="app" data-testid="app-container">
       <header className="app-header">
@@ -17,7 +27,8 @@ function App() {
         <Graph 
           microservice={microservice} 
           width={900} 
-          height={900} 
+          height={900}
+          configuration={configuration}
         />
       </main>
 
