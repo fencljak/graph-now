@@ -142,6 +142,28 @@ export const Graph = ({ microservice, width = 800, height = 800 }) => {
             markerWidth="6" markerHeight="6" orient="auto">
             <path d="M 0 0 L 10 5 L 0 10 z" fill={COLORS.connection.inbound} />
           </marker>
+          
+          {/* Origin circle markers - light color of source bubble */}
+          <marker id="originGatewayREST" viewBox="0 0 10 10" refX="5" refY="5"
+            markerWidth="5" markerHeight="5" orient="auto">
+            <circle cx="5" cy="5" r="4" fill={COLORS.gateway.REST.stroke} />
+          </marker>
+          <marker id="originGatewayKAFKA" viewBox="0 0 10 10" refX="5" refY="5"
+            markerWidth="5" markerHeight="5" orient="auto">
+            <circle cx="5" cy="5" r="4" fill={COLORS.gateway.KAFKA.stroke} />
+          </marker>
+          <marker id="originGatewaySOAP" viewBox="0 0 10 10" refX="5" refY="5"
+            markerWidth="5" markerHeight="5" orient="auto">
+            <circle cx="5" cy="5" r="4" fill={COLORS.gateway.SOAP.stroke} />
+          </marker>
+          <marker id="originInbound" viewBox="0 0 10 10" refX="5" refY="5"
+            markerWidth="5" markerHeight="5" orient="auto">
+            <circle cx="5" cy="5" r="4" fill={COLORS.inbound.stroke} />
+          </marker>
+          <marker id="originMicroservice" viewBox="0 0 10 10" refX="5" refY="5"
+            markerWidth="5" markerHeight="5" orient="auto">
+            <circle cx="5" cy="5" r="4" fill={COLORS.microservice.stroke} />
+          </marker>
         </defs>
 
         {/* Reference rings (subtle) */}
