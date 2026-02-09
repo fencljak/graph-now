@@ -8,7 +8,8 @@ export default defineConfig({
   server: {
     port: 3000,
     host: '0.0.0.0',
-    allowedHosts: 'all'
+    allowedHosts: ['.emergentagent.com', 'localhost', '127.0.0.1'],
+    cors: true
   },
   // Library build configuration
   build: {
