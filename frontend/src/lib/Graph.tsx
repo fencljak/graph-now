@@ -210,18 +210,22 @@ export const Graph: React.FC<GraphProps> = ({
       const resolved = [...positions];
       let hasCollision = true;
       let iterations = 0;
-      const maxIterations = 50;
+      const maxIterations = 100;
       
       while (hasCollision && iterations < maxIterations) {
         hasCollision = false;
         iterations++;
         
-        for (let j = 1; j < resolved.length; j++) {
-          if (rectsCollide(resolved[j - 1], resolved[j])) {
-            hasCollision = true;
-            const newAngle = resolved[j].angle + direction * 3;
-            const newCenter = getPointOnCircle(centerX, centerY, ringRadius, newAngle);
-            resolved[j] = createRectPosition(newCenter, newAngle);
+        // Check ALL pairs of rectangles, not just consecutive ones
+        for (let i = 0; i < resolved.length; i++) {
+          for (let j = i + 1; j < resolved.length; j++) {
+            if (rectsCollide(resolved[i], resolved[j])) {
+              hasCollision = true;
+              // Move the later rectangle further along the ring
+              const newAngle = resolved[j].angle + direction * 3;
+              const newCenter = getPointOnCircle(centerX, centerY, ringRadius, newAngle);
+              resolved[j] = createRectPosition(newCenter, newAngle);
+            }
           }
         }
       }
