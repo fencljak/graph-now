@@ -22,6 +22,8 @@ import {
   generateColorSet,
   rectsCollide
 } from './utils';
+import { Rectangle } from './Rectangle';
+import { Circle } from './Circle';
 import './Graph.css';
 
 interface ColorPalette {
