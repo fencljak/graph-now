@@ -9,12 +9,18 @@
         "outbound": [
           "PaymentService",
           "InventoryAPI",
-          "ShippingService"
+          "ShippingService",
+          "NotificationSvc",
+          "UserService",
+          "AnalyticsAPI"
         ],
         "inbound": [
           "POST /orders",
           "GET /orders/{id}",
-          "PUT /orders/{id}"
+          "PUT /orders/{id}",
+          "DELETE /orders/{id}",
+          "GET /orders/list",
+          "POST /orders/bulk"
         ]
       },
       {
@@ -23,11 +29,18 @@
         "outbound": [
           "order.created",
           "order.updated",
-          "order.shipped"
+          "order.shipped",
+          "order.cancelled",
+          "order.refunded",
+          "order.completed"
         ],
         "inbound": [
           "payment.completed",
-          "inventory.reserved"
+          "inventory.reserved",
+          "shipping.ready",
+          "user.verified",
+          "stock.updated",
+          "promo.applied"
         ]
       },
       {
@@ -35,11 +48,19 @@
         "name": "Legacy Bridge",
         "outbound": [
           "ERP System",
-          "AccountingWS"
+          "AccountingWS",
+          "WarehouseMgmt",
+          "CRMService",
+          "TaxCalculator",
+          "AuditLogger"
         ],
         "inbound": [
           "OrderImport",
-          "CustomerSync"
+          "CustomerSync",
+          "ProductUpdate",
+          "PriceRefresh",
+          "DiscountApply",
+          "ReportGenerate"
         ]
       }
     ]
