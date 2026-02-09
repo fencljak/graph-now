@@ -271,6 +271,15 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
     );
   }, []);
 
+  // Clear focus when clicking on background
+  const handleBackgroundClick = useCallback((e) => {
+    // Only clear if clicking directly on the SVG or background rect
+    if (e.target.tagName === 'svg' || e.target.dataset.background === 'true') {
+      setSelectedElement(null);
+      setFocusedElement(null);
+    }
+  }, []);
+
   const handleExport = useCallback(() => {
     if (svgRef.current) {
       downloadSvg(svgRef.current, `${microservice?.name || 'microservice'}-architecture.svg`);
