@@ -7,12 +7,14 @@ function App() {
   const [microservice] = useState(mockData.microservice);
 
   // Example configuration with custom colors
+  // If colors not specified, they fallback to grey (#9E9E9E)
   const configuration = {
     colors: {
       microservice: '#7C4DFF', // Purple
       gateway: '#00BCD4',      // Cyan
       inbound: '#5C6BC0',      // Indigo
       outbound: '#26A69A'      // Teal
+      // Remove any of these to see grey fallback
     }
   };
 
