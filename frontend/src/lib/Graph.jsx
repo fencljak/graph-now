@@ -379,8 +379,8 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                       height={endpointHeight}
                       rx="8"
                       ry="8"
-                      fill={COLORS.outbound.fill}
-                      stroke={COLORS.outbound.stroke}
+                      fill={colors.outbound.fill}
+                      stroke={colors.outbound.stroke}
                       strokeWidth={selected ? 3 : 2}
                       className="endpoint-rect"
                     />
@@ -388,7 +388,7 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                       x={pos.x}
                       y={pos.y + 4}
                       textAnchor="middle"
-                      fill={COLORS.outbound.text}
+                      fill={colors.outbound.text}
                       fontSize="11"
                       fontWeight="500"
                       className="endpoint-text"
@@ -422,8 +422,8 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                       height={endpointHeight}
                       rx="8"
                       ry="8"
-                      fill={COLORS.inbound.fill}
-                      stroke={COLORS.inbound.stroke}
+                      fill={colors.inbound.fill}
+                      stroke={colors.inbound.stroke}
                       strokeWidth={selected ? 3 : 2}
                       className="endpoint-rect"
                     />
@@ -431,7 +431,7 @@ export const Graph = ({ microservice, width = 800, height = 800, configuration =
                       x={pos.x}
                       y={pos.y + 4}
                       textAnchor="middle"
-                      fill={COLORS.inbound.text}
+                      fill={colors.inbound.text}
                       fontSize="11"
                       fontWeight="500"
                       className="endpoint-text"
