@@ -1,7 +1,10 @@
 import React, { useRef, useState, useMemo, useCallback } from 'react';
 import { COLORS } from './colors';
-import { getPointOnCircle, generateBezierPath, distributeOnArc, downloadSvg, getCircleEdgePoint, getRectEdgePoint } from './utils';
+import { getPointOnCircle, generateBezierPath, distributeOnArc, downloadSvg, getCircleEdgePoint, getRectEdgePoint, generateColorSet } from './utils';
 import './Graph.css';
+
+// Default grey color for fallback
+const DEFAULT_COLOR = '#9E9E9E';
 
 /**
  * MicroserviceGraph - SVG visualization component for microservice architecture
@@ -9,12 +12,30 @@ import './Graph.css';
  * @param {import('./types').Microservice} props.microservice - The microservice data to visualize
  * @param {number} [props.width=800] - SVG width
  * @param {number} [props.height=800] - SVG height
+ * @param {Object} [props.configuration] - Configuration options
+ * @param {Object} [props.configuration.colors] - Custom colors map
+ * @param {string} [props.configuration.colors.microservice] - Base color for microservice bubble
+ * @param {string} [props.configuration.colors.gateway] - Base color for gateway bubbles
+ * @param {string} [props.configuration.colors.inbound] - Base color for inbound endpoints
+ * @param {string} [props.configuration.colors.outbound] - Base color for outbound endpoints
  */
-export const Graph = ({ microservice, width = 800, height = 800 }) => {
+export const Graph = ({ microservice, width = 800, height = 800, configuration = {} }) => {
   const svgRef = useRef(null);
   const [hoveredElement, setHoveredElement] = useState(null);
   const [selectedElement, setSelectedElement] = useState(null);
   const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, content: '' });
+
+  // Build color palette from configuration or defaults
+  const colors = useMemo(() => {
+    const userColors = configuration.colors || {};
+    
+    return {
+      microservice: generateColorSet(userColors.microservice || DEFAULT_COLOR),
+      gateway: generateColorSet(userColors.gateway || DEFAULT_COLOR),
+      inbound: generateColorSet(userColors.inbound || DEFAULT_COLOR),
+      outbound: generateColorSet(userColors.outbound || DEFAULT_COLOR),
+    };
+  }, [configuration.colors]);
 
   // Layout configuration
   const centerX = width / 2;
